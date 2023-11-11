@@ -10,12 +10,15 @@ class Handler:
 
     def add_Server(self, name) -> None:
         Servers[name] = self.server_addr
-        if os.path.exists(os.getcwd()+"\\Firewall\\ServerHandler_"):
-            if not os.path.exists(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl"):
-                with open(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl", "wb") as ServerPKL:
+        if os.path.exists(".\\ServerHandler_"):
+            print("OS Path Exists")
+            if not os.path.exists(".\\ServerHandler_\\Servers.pkl"):
+                print("OS File Path does not Exist")
+                with open(".\\ServerHandler_\\Servers.pkl", "wb") as ServerPKL:
                     pickle.dump(Servers, ServerPKL)
             else:
-                with open(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl", "rb+") as ServerPKL:
+                print("OS File Path Exist")
+                with open(".\\ServerHandler_\\Servers.pkl", "rb+") as ServerPKL:
                     ServerData = pickle.load(ServerPKL)
                     if name in ServerData:
                         print(f"Server [{name}] [{self.server_addr}] is rebooted.")
@@ -25,17 +28,18 @@ class Handler:
                     pickle.dump(ServersPkl, ServerPKL)
                     
         else:
-            os.mkdir(os.getcwd()+"\\Firewall\\ServerHandler_")
-            with open(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl", "wb") as ServerPKL:
+            print("OS Path does not Exist")
+            os.mkdir(".\\ServerHandler_")
+            with open(".\\ServerHandler_\\Servers.pkl", "wb") as ServerPKL:
                 pickle.dump(Servers, ServerPKL)
-        print(f"Server [{name}] added from [{self.server_addr}]")
+            print(f"Server [{name}] added from [{self.server_addr}]")
 
     def kill_Server(self, name) -> None:
-        if os.path.exists(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl"):
-            with open(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl", "rb+") as ServerPKL:
+        if os.path.exists(".\\ServerHandler_\\Servers.pkl"):
+            with open(".\\ServerHandler_\\Servers.pkl", "rb+") as ServerPKL:
                 ServerData = pickle.load(ServerPKL)
                 if name in ServerData:
-                    del ServerData[name]
+                    ServerData.pop(name)
                     ServerPKL.seek(0)
                     pickle.dump(ServerData, ServerPKL)
                     print(f"Server [{name}] [{self.server_addr}] is killed.")
@@ -45,8 +49,8 @@ class Handler:
             print(f"Server [{name}] [{self.server_addr}] is not found.")
     
     def get_Servers(self, name):
-        if os.path.exists(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl"):
-            with open(os.getcwd()+"\\Firewall\\ServerHandler_\\Servers.pkl", "rb") as ServerPKL:
+        if os.path.exists(".\\ServerHandler_\\Servers.pkl"):
+            with open(".\\ServerHandler_\\Servers.pkl", "rb") as ServerPKL:
                 ServerData = pickle.load(ServerPKL)
                 Servers = ServerData
         else:
@@ -57,4 +61,10 @@ class Handler:
         return None, None
     
     def get_All_Servers(self):
-        return Servers
+        if os.path.exists(".\\ServerHandler_\\Servers.pkl"):
+            with open(".\\ServerHandler_\\Servers.pkl", "rb") as ServerPKL:
+                ServerData = pickle.load(ServerPKL)
+                Servers = ServerData
+                return Servers
+        else:
+            return None, None

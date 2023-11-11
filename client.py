@@ -14,8 +14,10 @@ name, SERVER = Handler().get_Servers(name)
 
 if not SERVER:
     print("Server not found")
+    exit(1)
 
 ADDR = (SERVER, PORT)
+print(ADDR)
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
@@ -38,7 +40,11 @@ def send(msg):
     print(msg_)
 
 while connected:
-    msg = input(">$: ")
-    send(msg)
-    if msg == DISCONNECT_MESSAGE:
-        connected = False
+    try:
+        msg = input(">$: ")
+        send(msg)
+        if msg == DISCONNECT_MESSAGE:
+            connected = False
+    except Exception:
+        print(f"Server [{name}] is disconnected")
+        exit(1)
